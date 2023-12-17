@@ -1,18 +1,26 @@
-import mongoose from "mongoose";
-import express from "express";
 import dotenv from 'dotenv'
 import connectDB from "./db/index.js";
+import { app } from './app.js';
 
-const app = express();
-
+/* methods for dotenv configer is return in package.json*/
 dotenv.config({
     path: './env'
 })
 
-connectDB();
-
-
-
+/*connectDB is a asnyc so it  return a promiss so we are handling promiss*/
+connectDB()
+.then(()=>{
+    app.listen(process.env.PORT || 8080, ()=>{
+        console.log(`Server is runinig at port ${process.env.PORT}`)
+    });
+    app.on('error', (error)=>{
+        console.log(`Error in data base connection`,error );
+        throw error;
+    })
+})
+.catch((error)=>{
+    console.log(`Error in connecting the database ${error}`)
+});
 
 
 

@@ -9,7 +9,7 @@ app.use(cors({
     Credential: true
 }));
 
-/* we use this so that a client can use 16kb data at a time*/
+/* we use this so that a client can use 16kb data at a time when data coe from form*/
 app.use(express.json({limit:'16kb'}));
 
 /* some user contain + or %20 so we want our website can understand every things*/

@@ -18,4 +18,11 @@ app.use(express.urlencoded({extended: true, limit:'16kb'}));
 /* store static files in public folder*/
 app.use(express.static("Public"));
 app.use(cookieParser());
+
+/*routes import */
+import userRouter from './routes/user.routes.js';
+
+/*Router declaration*/
+app.use('/api/v1/user', userRouter);
+
 export { app };

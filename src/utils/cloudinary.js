@@ -11,7 +11,8 @@ try {
     if(!localFilePath) return null;
     const response = await cloudinary.uploader.upload(localFilePath, {
     resource_type: "auto"})
-    console.log("file is uploaded on cloudanary", response.url)
+    // console.log("file is uploaded on cloudanary", response.url)
+    fs.unlinkSync(localFilePath)
   return response;
 } catch (error) {
   /* Remove the localy uploaded file as the uploades file get failed*/

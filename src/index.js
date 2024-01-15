@@ -4,7 +4,7 @@ import { app } from './app.js';
 
 /* methods for dotenv configer is return in package.json*/
 dotenv.config({
-    path: './env'
+    path: './.env'
 })
 
 /*connectDB is a asnyc so it  return a promiss so we are handling promiss*/

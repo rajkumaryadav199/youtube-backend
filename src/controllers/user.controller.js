@@ -59,4 +59,30 @@ res.status(200).json({
 })
 })
 
-export { registerUser }
+const userLogin = asyncHandler(async(req, res)=>{
+    /*req.body data is present or not*/
+    const {email, username, password } =req.body;
+    /*email || username  or password present */
+    if(!email || !username)
+    {
+        throw new ApiError(400,"Email or username is required")
+    }
+    /*check user exist or not*/
+    const user = await User.findOne({
+        $or:[{email}, {username}]
+    });
+    if(!user)
+    {
+        throw new ApiError(404, "User Dose not exist")
+    }
+    /*check correct password */
+    const isPasswordValied = await user.isPasswordCorrect(password);
+
+    if(!isPasswordValied)
+    {
+        throw new ApiError(401, "Password is incorrect")
+    }
+    /*now generate tokens*/
+})
+
+export { registerUser, userLogin }

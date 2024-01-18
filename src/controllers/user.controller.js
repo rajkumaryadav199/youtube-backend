@@ -43,11 +43,11 @@ const registerUser =asyncHandler( async(req, res)=>{
         coverImage: coverImage?.url || ''
     });
     /* in response remove password  and refresh token*/
-    const createdUser = await User.findById(user._id).select("-password -refreshToken")
+    // giconst createdUser = await User.findById(user._id).select("-password -refreshToken")
     /* check user creation*/
-    if(!createdUser){
-        throw new ApiError(500, 'Server error in creating user')
-    }
+    // if(!createdUser){
+    //     throw new ApiError(500, 'Server error in creating user')
+    // }
 
     return res.status(201).json(
         new ApiResponse(201, createdUser, "User registered successfully")

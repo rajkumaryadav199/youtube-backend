@@ -17,6 +17,8 @@ app.use(express.urlencoded({extended: true, limit:'16kb'}));
 
 /* store static files in public folder*/
 app.use(express.static("Public"));
+
+/*used cookies parser to pass some information for authontication*/
 app.use(cookieParser());
 
 /*routes import */

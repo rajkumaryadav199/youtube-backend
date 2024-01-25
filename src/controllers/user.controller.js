@@ -7,13 +7,13 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 const generateAccessAndRefereshTokens = async(userId)=>{
     try {
         const user = await User.findById(userId);
-        const accessTokens =user.generateAccessToken();
-        const refreshTokens =user.generateRefreshToken();
+        const accessToken =user.generateAccessToken();
+        const refreshToken =user.generateRefreshToken();
 
         user.refereshTokens = refereshTokens;
         await user.save({validateBeforSave:false});
 
-        return {accessTokens, refreshTokens} 
+        return {accessToken, refreshToken} 
     } catch (error) {
         throw new ApiError(500, "Some things went wrong while generating access tokens")
     }
@@ -98,7 +98,7 @@ const userLogin = asyncHandler(async(req, res)=>{
         throw new ApiError(401, "Password is incorrect")
     }
     /*now generate tokens*/
-    const {accessTokens, refreshTokens} = await generateAccessAndRefereshTokens(user._id);
+    const {accessToken, refreshToken} = await generateAccessAndRefereshTokens(user._id);
 
     const loggedInUser =await User.findById(user._id).select("-password -refreshToken");
 
@@ -109,18 +109,39 @@ const userLogin = asyncHandler(async(req, res)=>{
     }
     return res
     .status(200)
-    .cookie("accessToken", accessTokens, options)
-    .cookie("refreshToken", refreshTokens, option)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, option)
     .json(
         new ApiResponse(200, {
-            user:loggedInUser,accessTokens, refreshTokens
+            user:loggedInUser,accessToken, refreshToken
         },
         "User Logged In successfully")
     )
 })
 
 const logoutUser = asyncHandler(async(req,res)=>{
+    await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $set:{
+                refreshToken: undefined
+            }
+        },
+        {
+            new:true
+        }
+        )
 
+        const options ={
+            httpOnly:true,
+            secure:true
+        }
+
+        return res
+        .status(200)
+        .clearCookie("accessToken", options)
+        .clearCookie("refreshToken", options)
+        .json(new ApiError(200, {}, "User logged Out"))
 })
 
-export { registerUser, userLogin }
+export { registerUser, userLogin, logoutUser }

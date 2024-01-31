@@ -10,7 +10,7 @@ const generateAccessAndRefereshTokens = async(userId)=>{
         const accessToken =user.generateAccessToken();
         const refreshToken =user.generateRefreshToken();
 
-        user.refereshTokens = refereshTokens;
+        user.refereshToken = refreshToken;
         await user.save({validateBeforSave:false});
 
         return {accessToken, refreshToken} 
@@ -19,7 +19,7 @@ const generateAccessAndRefereshTokens = async(userId)=>{
     }
 }
 
-const registerUser =asyncHandler( async(req, res)=>{
+const registerUser = asyncHandler( async(req, res)=>{
     /* get details from frontend */
     const {username, fullName, email, password} = req.body;
     /* Validation of proper data not empty */
@@ -78,7 +78,8 @@ const userLogin = asyncHandler(async(req, res)=>{
     /*req.body data is present or not*/
     const {email, username, password } =req.body;
     /*email || username  or password present */
-    if(!email || !username)
+    console.log("data", email, username, password)
+    if(!(email || username))
     {
         throw new ApiError(400,"Email or username is required")
     }
@@ -110,7 +111,7 @@ const userLogin = asyncHandler(async(req, res)=>{
     return res
     .status(200)
     .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, option)
+    .cookie("refreshToken", refreshToken, options)
     .json(
         new ApiResponse(200, {
             user:loggedInUser,accessToken, refreshToken
